@@ -3,7 +3,7 @@
 A comprehensive JavaScript tool suite to help solve common C programming quiz questions instantly. Includes ARM assembly analysis, memory allocation calculations, function prototype parsing, and struct memory layout visualization.
 
 ## Hosting
-The solvers are available at: [Solvers](https://tclowe1982.github.io/CompOrgQuestionHelper/quiz-solver.html)
+The solvers are available at: [Solvers](https://tclowe1982.github.io/CompOrgQuestionHelper/index.html)
 
 ## Features
 
