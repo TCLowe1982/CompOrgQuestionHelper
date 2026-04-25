@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Solver - Module Tests</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="toolbar">
+        <a href="index.html">← Back to Home</a>
+    </div>
+    <div class="content">
+        <h1>🧪 C Programming Quiz Solver - Module Tests</h1>
+        
+        <div class="test-section">
+            <h2>Test 1: ARM Assembly Analyzer</h2>
+            <pre id="test1-input"></pre>
+            <div id="test1-result" class="result"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>Test 2: Memory Allocation Calculator</h2>
+            <pre id="test2-input"></pre>
+            <div id="test2-result" class="result"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>Test 3: Function Prototype Analyzer</h2>
+        <pre id="test3-input"></pre>
+        <div id="test3-result" class="result"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>Test 4: Struct Memory Layout</h2>
+        <pre id="test4-input"></pre>
+        <div id="test4-result" class="result"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>Test Summary</h2>
+        <div id="summary"></div>
+    </div>
+    </div>
+
+    <script src="arm-analyzer.js?v=5"></script>
+    <script src="memory-calculator.js?v=5"></script>
+    <script src="function-analyzer.js?v=5"></script>
+    <script src="struct-analyzer.js?v=5"></script>
+    <script>
+        let testsPass = 0;
+        let testsFail = 0;
+
+        function assert(condition, message) {
+            if (condition) {
+                testsPass++;
+                return `<span class="pass">✓ PASS:</span> ${message}`;
+            } else {
+                testsFail++;
+                return `<span class="fail">✗ FAIL:</span> ${message}`;
+            }
+        }
+
+        // Test 1: ARM Assembly
+        try {
+            const armCode = `    cmp r0, #0x10
+    beq foo
+    add r0, #1
+foo:
+    add r0, #2`;
+            
+            document.getElementById('test1-input').textContent = armCode;
+            
+            const armAnalyzer = new ARMAnalyzer();
+            armAnalyzer.parse(armCode);
+            
+            const result16 = armAnalyzer.simulate(16);
+            const result15 = armAnalyzer.simulate(15);
+            const result17 = armAnalyzer.simulate(17);
+            
+            let output = '';
+            // When r0 == 16: beq branches to foo, skips add #1, only does add #2 → +2
+            output += assert(result16.finalR0 === 18, `When r0=16 (beq taken), final is 18 (got ${result16.finalR0})`);
+            output += '<br>';
+            // When r0 != 16: beq doesn't branch, does add #1 then add #2 → +3
+            output += assert(result15.finalR0 === 18, `When r0=15 (beq not taken), final is 18 (got ${result15.finalR0})`);
+            output += '<br>';
+            output += assert(result17.finalR0 === 20, `When r0=17 (beq not taken), final is 20 (got ${result17.finalR0})`);
+            output += '<br>';
+            
+            // Check that behavior differs
+            const change16 = result16.finalR0 - 16;
+            const change17 = result17.finalR0 - 17;
+            output += assert(change16 === 2, `r0=16 changes by +2 (got ${change16})`);
+            output += '<br>';
+            output += assert(change17 === 3, `r0=17 changes by +3 (got ${change17})`);
+            output += '<br>';
+            
+            const cCode = armAnalyzer.generateCCode();
+            output += assert(cCode.includes('if'), 'Generated C code includes conditional');
+            output += '<br>';
+            // The correct pattern: if (r0 != 16) r0 += 1; r0 += 2;
+            output += assert(cCode.includes('!=') || cCode.includes('=='), 'Generated C code includes comparison');
+            
+            document.getElementById('test1-result').innerHTML = output;
+        } catch (error) {
+            testsFail++;
+            document.getElementById('test1-result').innerHTML = `<span class="fail">✗ ERROR:</span> ${error.message}`;
+        }
+
+        // Test 2: Memory Allocation
+        try {
+            const memStatement = 'int * intarray = malloc(5*sizeof(int));';
+            document.getElementById('test2-input').textContent = memStatement;
+            
+            const memCalc = new MemoryCalculator();
+            memCalc.setTypeSizes({ 'int': 2 });
+            
+            const result = memCalc.analyzeMalloc(memStatement);
+            
+            let output = '';
+            output += assert(result.bytes === 10, `Allocated 10 bytes (got ${result.bytes})`);
+            output += '<br>';
+            output += assert(result.varName === 'intarray', `Variable name is 'intarray' (got ${result.varName})`);
+            output += '<br>';
+            output += assert(result.replacements.length === 1, 'Found 1 sizeof expression');
+            output += '<br>';
+            output += assert(result.parsedExpression === '5*2', `Expression evaluates to '5*2' (got ${result.parsedExpression})`);
+            
+            document.getElementById('test2-result').innerHTML = output;
+        } catch (error) {
+            testsFail++;
+            document.getElementById('test2-result').innerHTML = `<span class="fail">✗ ERROR:</span> ${error.message}`;
+        }
+
+        // Test 3: Function Prototype
+        try {
+            const funcProto = 'int foo(char a, double * b);';
+            document.getElementById('test3-input').textContent = funcProto;
+            
+            const funcAnalyzer = new FunctionAnalyzer();
+            const parsed = funcAnalyzer.parsePrototype(funcProto);
+            
+            let output = '';
+            output += assert(parsed.returnType === 'int', `Return type is 'int' (got ${parsed.returnType})`);
+            output += '<br>';
+            output += assert(parsed.functionName === 'foo', `Function name is 'foo' (got ${parsed.functionName})`);
+            output += '<br>';
+            output += assert(parsed.parameterCount === 2, `Has 2 parameters (got ${parsed.parameterCount})`);
+            output += '<br>';
+            output += assert(parsed.parameters[0].type === 'char', `First param is char (got ${parsed.parameters[0].type})`);
+            output += '<br>';
+            output += assert(parsed.parameters[1].isPointer, `Second param is pointer`);
+            
+            document.getElementById('test3-result').innerHTML = output;
+        } catch (error) {
+            testsFail++;
+            document.getElementById('test3-result').innerHTML = `<span class="fail">✗ ERROR:</span> ${error.message}`;
+        }
+
+        // Test 4: Struct Layout
+        try {
+            const structDef = `struct bar {
+    int v0;
+    int v1;
+    int v2;
+};`;
+            document.getElementById('test4-input').textContent = structDef;
+            
+            const structAnalyzer = new StructAnalyzer();
+            structAnalyzer.setTypeSizes({ 'int': 2 });
+            structAnalyzer.alignment = false; // Simple mode for test
+            
+            const parsed = structAnalyzer.parseStruct(structDef);
+            const memberAddr = structAnalyzer.getMemberAddress(parsed, 10, 'v1');
+            
+            let output = '';
+            output += assert(parsed.name === 'bar', `Struct name is 'bar' (got ${parsed.name})`);
+            output += '<br>';
+            output += assert(parsed.members.length === 3, `Has 3 members (got ${parsed.members.length})`);
+            output += '<br>';
+            output += assert(parsed.members[1].offset === 2, `v1 offset is 2 (got ${parsed.members[1].offset})`);
+            output += '<br>';
+            output += assert(memberAddr.address === 12, `v1 address is 12 when base=10 (got ${memberAddr.address})`);
+            output += '<br>';
+            output += assert(parsed.totalSize === 6, `Total struct size is 6 bytes (got ${parsed.totalSize})`);
+            
+            document.getElementById('test4-result').innerHTML = output;
+        } catch (error) {
+            testsFail++;
+            document.getElementById('test4-result').innerHTML = `<span class="fail">✗ ERROR:</span> ${error.message}`;
+        }
+
+        // Summary
+        const total = testsPass + testsFail;
+        const percent = total > 0 ? Math.round((testsPass / total) * 100) : 0;
+        const summaryClass = testsFail === 0 ? 'pass' : 'fail';
+        
+        document.getElementById('summary').innerHTML = `
+            <h3 class="${summaryClass}">
+                ${testsPass}/${total} tests passed (${percent}%)
+            </h3>
+            <p><span class="pass">Passed: ${testsPass}</span> | <span class="fail">Failed: ${testsFail}</span></p>
+            ${testsFail === 0 ? '<p>🎉 All tests passed! All modules are working correctly.</p>' : '<p>⚠️ Some tests failed. Check the errors above.</p>'}
+        `;
+    </script>
+</body>
+</html>

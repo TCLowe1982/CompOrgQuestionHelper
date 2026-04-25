@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Debug ARM Analyzer</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="toolbar">
+        <a href="index.html">← Back to Home</a>
+    </div>
+    <div class="content">
+        <h1>Debug ARM Analyzer</h1>
+        <pre id="output"></pre>
+    </div>
+
+    <script src="arm-analyzer.js?v=5"></script>
+    <script>
+        const output = document.getElementById('output');
+        
+        try {
+            const code = `    cmp r0, #0x10
+    beq foo
+    add r0, #1
+foo:
+    add r0, #2`;
+            
+            output.textContent += 'Assembly Code:\n' + code + '\n\n';
+            
+            const analyzer = new ARMAnalyzer();
+            output.textContent += 'Parsing...\n';
+            analyzer.parse(code);
+            
+            output.textContent += '\nParsed Instructions:\n';
+            analyzer.instructions.forEach((instr, i) => {
+                output.textContent += `${i}: ${instr.opcode} [${instr.operands.join(', ')}] label:${instr.label}\n`;
+            });
+            
+            output.textContent += '\nLabels:\n';
+            for (const [label, idx] of Object.entries(analyzer.labels)) {
+                output.textContent += `  ${label} -> instruction ${idx}\n`;
+            }
+            
+            output.textContent += '\nSimulating with r0=16:\n';
+            const result = analyzer.simulate(16);
+            output.textContent += `Final r0: ${result.finalR0}\n`;
+            output.textContent += 'Trace:\n' + result.trace.join('\n') + '\n';
+            
+            output.textContent += '\n\nSimulating with r0=17:\n';
+            const result2 = analyzer.simulate(17);
+            output.textContent += `Final r0: ${result2.finalR0}\n`;
+            output.textContent += 'Trace:\n' + result2.trace.join('\n') + '\n';
+            
+        } catch (error) {
+            output.textContent += '\n\nERROR: ' + error.message + '\n' + error.stack;
+        }
+    </script>
+</body>
+</html>

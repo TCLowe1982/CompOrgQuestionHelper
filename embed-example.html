@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ARM Analyzer - Embed Example</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="toolbar">
+        <a href="index.html">← Back to Home</a>
+    </div>
+    <div class="content">
+        <h1>My Webpage</h1>
+        <p>This shows how to embed the ARM analyzer into any webpage.</p>
+
+        <!-- START: Embeddable ARM Analyzer Widget -->
+        <div id="arm-analyzer-widget"></div>
+    <script src="arm-analyzer.js?v=5"></script>
+    <script>
+        // Simple embedding example
+        (function() {
+            const widget = document.getElementById('arm-analyzer-widget');
+            
+            widget.innerHTML = `
+                <div style="max-width: 800px; margin: 20px auto; font-family: Arial, sans-serif;">
+                    <h2 style="color: #667eea;">ARM Assembly Analyzer</h2>
+                    <textarea id="arm-input" rows="10" style="width: 100%; font-family: monospace; padding: 10px; border: 2px solid #667eea; border-radius: 4px;">    cmp r0, #0x10
+    beq foo
+    add r0, #1
+foo:
+    add r0, #2</textarea>
+                    <button onclick="analyzeARM()" style="background: #667eea; color: white; border: none; padding: 10px 20px; margin-top: 10px; border-radius: 4px; cursor: pointer; font-size: 16px;">Analyze</button>
+                    <div id="arm-results" style="margin-top: 20px;"></div>
+                </div>
+            `;
+
+            window.analyzeARM = function() {
+                const code = document.getElementById('arm-input').value;
+                const resultsDiv = document.getElementById('arm-results');
+                
+                try {
+                    const analyzer = new ARMAnalyzer();
+                    analyzer.parse(code);
+                    const analysis = analyzer.analyze([0, 15, 16, 17]);
+                    
+                    let html = '<h3>Results:</h3>';
+                    html += '<div style="background: #f0f0f0; padding: 15px; border-radius: 4px; margin-bottom: 15px;">';
+                    analysis.results.forEach(r => {
+                        html += `<div>r0: ${r.initial} → ${r.final} (${r.change >= 0 ? '+' : ''}${r.change})</div>`;
+                    });
+                    html += '</div>';
+                    
+                    html += '<h3>Equivalent C Code:</h3>';
+                    html += `<pre style="background: #2d2d2d; color: #f8f8f2; padding: 15px; border-radius: 4px; overflow-x: auto;">${analysis.cCode}</pre>`;
+                    
+                    resultsDiv.innerHTML = html;
+                } catch (error) {
+                    resultsDiv.innerHTML = `<p style="color: red;">Error: ${error.message}</p>`;
+                }
+            };
+            
+            // Auto-analyze on load
+            analyzeARM();
+        })();
+    </script>
+    <!-- END: Embeddable ARM Analyzer Widget -->
+
+    <p>More content on your webpage...</p>
+    </div>
+</body>
+</html>

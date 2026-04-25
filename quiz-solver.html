@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>C Programming Quiz Solver</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎓 C Programming Quiz Solver</h1>
+            <p class="subtitle">Solve common programming quiz questions instantly</p>
+        </header>
+
+        <div class="main-tabs">
+            <button class="main-tab active" onclick="switchMainTab(0)">🔧 ARM Assembly</button>
+            <button class="main-tab" onclick="switchMainTab(1)">💾 Memory Allocation</button>
+            <button class="main-tab" onclick="switchMainTab(2)">📝 Function Prototypes</button>
+            <button class="main-tab" onclick="switchMainTab(3)">🏗️ Struct Layout</button>
+        </div>
+
+        <!-- ARM Assembly Tab -->
+        <div class="tab-panel active" id="panel-arm">
+            <div class="panel">
+                <h2>ARM Assembly to C Analyzer</h2>
+                <div class="info-box">
+                    <strong>Question Type:</strong> Given ARM assembly, find equivalent C code<br>
+                    <strong>Supported:</strong> CMP, BEQ, BNE, BGT, BLT, B, ADD, SUB, MOV
+                </div>
+                <textarea id="armInput" placeholder="Enter ARM assembly...">    cmp r0, #0x10
+    beq foo
+    add r0, #1
+foo:
+    add r0, #2</textarea>
+                <button onclick="analyzeARM()">🚀 Analyze</button>
+                
+                <div class="results" id="armResults"></div>
+            </div>
+        </div>
+
+        <!-- Memory Allocation Tab -->
+        <div class="tab-panel" id="panel-memory">
+            <div class="panel">
+                <h2>Memory Allocation Calculator</h2>
+                <div class="info-box">
+                    <strong>Question Type:</strong> How many bytes are allocated by malloc()?<br>
+                    <strong>Example:</strong> int * arr = malloc(5*sizeof(int));
+                </div>
+                
+                <div class="config-row">
+                    <div class="config-item">
+                        <label>sizeof(int):</label>
+                        <input type="number" id="memIntSize" value="2" min="1" max="8">
+                    </div>
+                    <div class="config-item">
+                        <label>sizeof(pointer):</label>
+                        <input type="number" id="memPtrSize" value="4" min="1" max="8">
+                    </div>
+                    <div class="config-item">
+                        <label>sizeof(char):</label>
+                        <input type="number" id="memCharSize" value="1" min="1" max="8">
+                    </div>
+                    <div class="config-item">
+                        <label>sizeof(double):</label>
+                        <input type="number" id="memDoubleSize" value="8" min="1" max="16">
+                    </div>
+                </div>
+
+                <textarea id="memInput" placeholder="Enter C statement with malloc()...">int * intarray = malloc(5*sizeof(int));</textarea>
+                <button onclick="analyzeMemory()">💾 Calculate</button>
+                
+                <div class="results" id="memResults"></div>
+            </div>
+        </div>
+
+        <!-- Function Prototype Tab -->
+        <div class="tab-panel" id="panel-function">
+            <div class="panel">
+                <h2>Function Prototype Analyzer</h2>
+                <div class="info-box">
+                    <strong>Question Type:</strong> What type does this function return?<br>
+                    <strong>Example:</strong> int foo(char a, double * b);
+                </div>
+                
+                <textarea id="funcInput" placeholder="Enter function prototype...">int foo(char a, double * b);</textarea>
+                <button onclick="analyzeFunction()">📝 Analyze</button>
+                
+                <div class="results" id="funcResults"></div>
+            </div>
+        </div>
+
+        <!-- Struct Layout Tab -->
+        <div class="tab-panel" id="panel-struct">
+            <div class="panel">
+                <h2>Struct Memory Layout Analyzer</h2>
+                <div class="info-box">
+                    <strong>Question Type:</strong> What is the memory address of a struct member?<br>
+                    <strong>Example:</strong> Given struct bar at address 10, where is mystruct.v1?
+                </div>
+                
+                <div class="config-row">
+                    <div class="config-item">
+                        <label>sizeof(int):</label>
+                        <input type="number" id="structIntSize" value="2" min="1" max="8">
+                    </div>
+                    <div class="config-item">
+                        <label>Base Address (decimal):</label>
+                        <input type="number" id="structBaseAddr" value="10" min="0">
+                    </div>
+                    <div class="config-item">
+                        <label>Member to find:</label>
+                        <input type="text" id="structMember" value="v1" placeholder="e.g., v1">
+                    </div>
+                    <div class="config-item">
+                        <label>Apply Alignment:</label>
+                        <select id="structAlignment" style="padding: 15px; border: 1px solid #ced4da; border-radius: 6px;">
+                            <option value="false">No (Simple)</option>
+                            <option value="true">Yes (Realistic)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <textarea id="structInput" placeholder="Enter struct definition...">struct bar {
+    int v0;
+    int v1;
+    int v2;
+};</textarea>
+                <button onclick="analyzeStruct()">🏗️ Analyze</button>
+                
+                <div class="results" id="structResults"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="arm-analyzer.js?v=6"></script>
+    <script src="memory-calculator.js?v=6"></script>
+    <script src="function-analyzer.js?v=6"></script>
+    <script src="struct-analyzer.js?v=6"></script>
+    <script src="quiz-solver.js?v=6"></script>
+</body>
+</html>
