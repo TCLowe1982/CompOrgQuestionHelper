@@ -3,221 +3,140 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ARM Assembly to C Code Analyzer</title>
+    <title>C Programming Quiz Solver</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>🔧 ARM Assembly to C Code Analyzer</h1>
-            <p class="subtitle">Solve ARM assembly equivalence questions with ease</p>
+            <h1>🎓 C Programming Quiz Solver</h1>
+            <p class="subtitle">Solve common programming quiz questions instantly</p>
         </header>
 
-        <div class="toolbar justify-end">
-            <a href="quiz-solver.html" class="btn-primary">🎓 Open Full Quiz Solver →</a>
+        <div class="main-tabs">
+            <button class="main-tab active" onclick="switchMainTab(0)">🔧 ARM Assembly</button>
+            <button class="main-tab" onclick="switchMainTab(1)">💾 Memory Allocation</button>
+            <button class="main-tab" onclick="switchMainTab(2)">📝 Function Prototypes</button>
+            <button class="main-tab" onclick="switchMainTab(3)">🏗️ Struct Layout</button>
         </div>
 
-        <div class="main-content">
+        <!-- ARM Assembly Tab -->
+        <div class="tab-panel active" id="panel-arm">
             <div class="panel">
-                <h2>📝 ARM Assembly Input</h2>
-                
+                <h2>ARM Assembly to C Analyzer</h2>
                 <div class="info-box">
-                    <strong>Supported Instructions:</strong>
-                    CMP, BEQ, BNE, BGT, BLT, B, ADD, SUB, MOV
+                    <strong>Question Type:</strong> Given ARM assembly, find equivalent C code<br>
+                    <strong>Supported:</strong> CMP, BEQ, BNE, BGT, BLT, B, ADD, SUB, MOV
                 </div>
-
-                <textarea id="assemblyInput" placeholder="Enter ARM assembly code here...
-Example:
-    cmp r0, #0x10
-    beq foo
-    add r0, #1
-foo:
-    add r0, #2">    cmp r0, #0x10
+                <textarea id="armInput" placeholder="Enter ARM assembly...">    cmp r0, #0x10
     beq foo
     add r0, #1
 foo:
     add r0, #2</textarea>
-
-                <button onclick="analyze()">🚀 Analyze Code</button>
-
-                <div class="examples">
-                    <h3 style="color: #495057; margin-bottom: 10px; font-size: 1.1em;">Quick Examples:</h3>
-                    <button class="example-btn" onclick="loadExample(1)">Example 1: BEQ</button>
-                    <button class="example-btn" onclick="loadExample(2)">Example 2: BNE</button>
-                    <button class="example-btn" onclick="loadExample(3)">Example 3: BGT</button>
-                </div>
+                <button onclick="analyzeARM()">🚀 Analyze</button>
+                
+                <div class="results" id="armResults"></div>
             </div>
+        </div>
 
-            <div class="panel full-width" id="resultsPanel" style="display: none;">
-                <h2>📊 Analysis Results</h2>
-
-                <div class="result-section">
-                    <h3>Test Results Summary</h3>
-                    <div id="testResults" class="test-results"></div>
+        <!-- Memory Allocation Tab -->
+        <div class="tab-panel" id="panel-memory">
+            <div class="panel">
+                <h2>Memory Allocation Calculator</h2>
+                <div class="info-box">
+                    <strong>Question Type:</strong> How many bytes are allocated by malloc()?<br>
+                    <strong>Example:</strong> int * arr = malloc(5*sizeof(int));
+                </div>
+                
+                <div class="config-row">
+                    <div class="config-item">
+                        <label>sizeof(int):</label>
+                        <input type="number" id="memIntSize" value="2" min="1" max="8">
+                    </div>
+                    <div class="config-item">
+                        <label>sizeof(pointer):</label>
+                        <input type="number" id="memPtrSize" value="4" min="1" max="8">
+                    </div>
+                    <div class="config-item">
+                        <label>sizeof(char):</label>
+                        <input type="number" id="memCharSize" value="1" min="1" max="8">
+                    </div>
+                    <div class="config-item">
+                        <label>sizeof(double):</label>
+                        <input type="number" id="memDoubleSize" value="8" min="1" max="16">
+                    </div>
                 </div>
 
-                <div class="result-section">
-                    <h3>💻 Equivalent C Code</h3>
-                    <pre id="cCodeOutput"></pre>
+                <textarea id="memInput" placeholder="Enter C statement with malloc()...">int * intarray = malloc(5*sizeof(int));</textarea>
+                <button onclick="analyzeMemory()">💾 Calculate</button>
+                
+                <div class="results" id="memResults"></div>
+            </div>
+        </div>
+
+        <!-- Function Prototype Tab -->
+        <div class="tab-panel" id="panel-function">
+            <div class="panel">
+                <h2>Function Prototype Analyzer</h2>
+                <div class="info-box">
+                    <strong>Question Type:</strong> What type does this function return?<br>
+                    <strong>Example:</strong> int foo(char a, double * b);
+                </div>
+                
+                <textarea id="funcInput" placeholder="Enter function prototype...">int foo(char a, double * b);</textarea>
+                <button onclick="analyzeFunction()">📝 Analyze</button>
+                
+                <div class="results" id="funcResults"></div>
+            </div>
+        </div>
+
+        <!-- Struct Layout Tab -->
+        <div class="tab-panel" id="panel-struct">
+            <div class="panel">
+                <h2>Struct Memory Layout Analyzer</h2>
+                <div class="info-box">
+                    <strong>Question Type:</strong> What is the memory address of a struct member?<br>
+                    <strong>Example:</strong> Given struct bar at address 10, where is mystruct.v1?
+                </div>
+                
+                <div class="config-row">
+                    <div class="config-item">
+                        <label>sizeof(int):</label>
+                        <input type="number" id="structIntSize" value="2" min="1" max="8">
+                    </div>
+                    <div class="config-item">
+                        <label>Base Address (decimal):</label>
+                        <input type="number" id="structBaseAddr" value="10" min="0">
+                    </div>
+                    <div class="config-item">
+                        <label>Member to find:</label>
+                        <input type="text" id="structMember" value="v1" placeholder="e.g., v1">
+                    </div>
+                    <div class="config-item">
+                        <label>Apply Alignment:</label>
+                        <select id="structAlignment" style="padding: 15px; border: 1px solid #ced4da; border-radius: 6px;">
+                            <option value="false">No (Simple)</option>
+                            <option value="true">Yes (Realistic)</option>
+                        </select>
+                    </div>
                 </div>
 
-                <div class="result-section">
-                    <h3>🔍 Execution Traces</h3>
-                    <div class="tabs" id="traceTabs"></div>
-                    <div id="traceContents"></div>
-                </div>
+                <textarea id="structInput" placeholder="Enter struct definition...">struct bar {
+    int v0;
+    int v1;
+    int v2;
+};</textarea>
+                <button onclick="analyzeStruct()">🏗️ Analyze</button>
+                
+                <div class="results" id="structResults"></div>
             </div>
         </div>
     </div>
 
-    <script src="arm-analyzer.js?v=5"></script>
-    <script>
-        function analyze() {
-            const assemblyCode = document.getElementById('assemblyInput').value;
-            
-            if (!assemblyCode.trim()) {
-                alert('Please enter some ARM assembly code!');
-                return;
-            }
-
-            try {
-                const analyzer = new ARMAnalyzer();
-                analyzer.parse(assemblyCode);
-
-                const testValues = [0, 1, 15, 16, 17, 32];
-                const analysis = analyzer.analyze(testValues);
-
-                // Show results panel
-                document.getElementById('resultsPanel').style.display = 'block';
-
-                // Display test results
-                displayTestResults(analysis.results);
-
-                // Display C code
-                document.getElementById('cCodeOutput').textContent = analysis.cCode;
-
-                // Display traces
-                displayTraces(analysis.results);
-
-                // Scroll to results
-                document.getElementById('resultsPanel').scrollIntoView({ behavior: 'smooth' });
-
-            } catch (error) {
-                alert('Error analyzing code: ' + error.message);
-                console.error(error);
-            }
-        }
-
-        function displayTestResults(results) {
-            const container = document.getElementById('testResults');
-            container.innerHTML = '';
-
-            // Find if there are different behaviors
-            const changes = results.map(r => r.change);
-            const hasVariation = new Set(changes).size > 1;
-
-            results.forEach(result => {
-                const isUnique = hasVariation && 
-                    changes.filter(c => c === result.change).length === 1;
-
-                const div = document.createElement('div');
-                div.className = 'test-item' + (isUnique ? ' highlighted' : '');
-                div.innerHTML = `
-                    <div class="test-value">r0 = ${result.initial}</div>
-                    <div>Final: ${result.final}</div>
-                    <div class="test-change">Change: ${result.change >= 0 ? '+' : ''}${result.change}</div>
-                `;
-                container.appendChild(div);
-            });
-        }
-
-        function displayTraces(results) {
-            const tabsContainer = document.getElementById('traceTabs');
-            const contentsContainer = document.getElementById('traceContents');
-            
-            tabsContainer.innerHTML = '';
-            contentsContainer.innerHTML = '';
-
-            results.forEach((result, index) => {
-                // Create tab
-                const tab = document.createElement('button');
-                tab.className = 'tab' + (index === 0 ? ' active' : '');
-                tab.textContent = `r0 = ${result.initial}`;
-                tab.onclick = () => switchTab(index);
-                tabsContainer.appendChild(tab);
-
-                // Create content
-                const content = document.createElement('div');
-                content.className = 'tab-content' + (index === 0 ? ' active' : '');
-                content.id = `trace-${index}`;
-                
-                const trace = document.createElement('div');
-                trace.className = 'trace';
-                
-                result.trace.forEach(line => {
-                    const lineDiv = document.createElement('div');
-                    lineDiv.className = 'trace-line';
-                    
-                    if (line.startsWith('Label')) {
-                        lineDiv.className += ' trace-label';
-                    } else if (line.includes('->')) {
-                        lineDiv.className += ' trace-branch';
-                    } else {
-                        lineDiv.className += ' trace-instruction';
-                    }
-                    
-                    lineDiv.textContent = line;
-                    trace.appendChild(lineDiv);
-                });
-                
-                content.appendChild(trace);
-                contentsContainer.appendChild(content);
-            });
-        }
-
-        function switchTab(index) {
-            // Update tabs
-            const tabs = document.querySelectorAll('.tab');
-            tabs.forEach((tab, i) => {
-                tab.classList.toggle('active', i === index);
-            });
-
-            // Update contents
-            const contents = document.querySelectorAll('.tab-content');
-            contents.forEach((content, i) => {
-                content.classList.toggle('active', i === index);
-            });
-        }
-
-        function loadExample(exampleNum) {
-            const examples = {
-                1: `    cmp r0, #0x10
-    beq foo
-    add r0, #1
-foo:
-    add r0, #2`,
-                2: `    cmp r0, #5
-    bne skip
-    add r0, #10
-skip:
-    add r0, #1`,
-                3: `    cmp r0, #10
-    bgt large
-    add r0, #5
-    b end
-large:
-    sub r0, #3
-end:
-    add r0, #2`
-            };
-
-            document.getElementById('assemblyInput').value = examples[exampleNum];
-        }
-
-        // Auto-analyze on page load
-        window.onload = () => {
-            analyze();
-        };
-    </script>
+    <script src="arm-analyzer.js?v=6"></script>
+    <script src="memory-calculator.js?v=6"></script>
+    <script src="function-analyzer.js?v=6"></script>
+    <script src="struct-analyzer.js?v=6"></script>
+    <script src="quiz-solver.js?v=6"></script>
 </body>
 </html>
