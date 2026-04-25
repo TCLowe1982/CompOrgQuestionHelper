@@ -2,6 +2,9 @@
 
 A comprehensive JavaScript tool suite to help solve common C programming quiz questions instantly. Includes ARM assembly analysis, memory allocation calculations, function prototype parsing, and struct memory layout visualization.
 
+## Hosting
+The solvers are available at: [Solvers](https://tclowe1982.github.io/CompOrgQuestionHelper/quiz-solver.html)
+
 ## Features
 
 ### 🔧 ARM Assembly to C Analyzer
@@ -32,27 +35,24 @@ A comprehensive JavaScript tool suite to help solve common C programming quiz qu
 
 ### 🚀 Interactive Web Interface (Recommended)
 
-Simply open **`index.html`** in your browser - no installation required!
+Simply open **`quiz-solver.html`** in your browser - no installation required!
 
 ```bash
-# Just double-click index.html
+# Just double-click quiz-solver.html
 # Or open it from command line:
-start index.html
+start quiz-solver.html
 ```
 
 This gives you access to all four question types in a beautiful tabbed interface.
 
-### 📦 Individual Modules
+### 📦 Individual Tools
 
-Each analyzer module can also be used separately as a JavaScript library:
+Each tool can also be used separately:
+- **`index.html`** - ARM Assembly analyzer only
 - **`arm-analyzer.js`** - ARM Assembly module
 - **`memory-calculator.js`** - Memory allocation module
 - **`function-analyzer.js`** - Function prototype module
 - **`struct-analyzer.js`** - Struct layout module
-
-**Alternative Pages:**
-- **`arm-standalone.html`** - Simple ARM Assembly analyzer (single-purpose version)
-- **`embed-example.html`** - Example of embedding the analyzer in any webpage
 
 ### 📚 Use as JavaScript Library
 
@@ -308,4 +308,15 @@ Works in all modern browsers:
 - No support for bitfields or unions
 - Padding calculation assumes standard C alignment rules
 
+## Future Enhancements
+
+### Planned Features
+- ✨ Multiple ARM registers (r1-r15)
+- ✨ More ARM instructions (LSL, LSR, MUL, ORR, AND, LDR, STR)
+- ✨ Nested struct support
+- ✨ Union memory layout
+- ✨ Bitfield calculations
+
+## Disclaimer
+This project was created with the help of ClaudeCode, and with GitHub Copilot. This code does not contain any external calls, but if any machine generated code violates your schools academic intergetigy policy, you have been so warned. The Planned features are cool things that I would like to figure out how to do, but were not needed for my upcomming exam, so I chose not to focus on them. If you like this code, hate this code, have ideas how to improve this code, feel free to do so. I guarantee no support of anything regarding this repository past the test date, and then only about 50/50. This was a student project, designed to help check their answers without having to boot up an entire emulator. This may very well produce inccorect results, because my test cases were very limited. Sorry in advance. And this last bit should go without saying, but use at your own risk. I don't expect it to do anything stupid, but I've managed to create some rather spectacular failures before. Other than that, good luck, have fun.
 
