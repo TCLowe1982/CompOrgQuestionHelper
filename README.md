@@ -310,14 +310,10 @@ Works in all modern browsers:
 ### Planned Features
 - ✨ Multiple ARM registers (r1-r15)
 - ✨ More ARM instructions (LSL, LSR, MUL, ORR, AND, LDR, STR)
-- ✨ ARM condition flags (N, Z, C, V)
 - ✨ Nested struct support
 - ✨ Union memory layout
 - ✨ Bitfield calculations
-- ✨ Function pointer parsing
-- ✨ Export results as PDF
-- ✨ Share via URL
-- ✨ Dark mode toggle
-- ✨ More C syntax edge cases
-- ✨ Custom test cases
-- ✨ Quiz mode with random questions
+
+## Disclaimer
+This project was created with the help of ClaudeCode, and with GitHub Copilot. This code does not contain any external calls, but if any machine generated code violates your schools academic intergetigy policy, you have been so warned. The Planned features are cool things that I would like to figure out how to do, but were not needed for my upcomming exam, so I chose not to focus on them. If you like this code, hate this code, have ideas how to improve this code, feel free to do so. I guarantee no support of anything regarding this repository past the test date, and then only about 50/50. This was a student project, designed to help check their answers without having to boot up an entire emulator. This may very well produce inccorect results, because my test cases were very limited. Sorry in advance. And this last bit should go without saying, but use at your own risk. I don't expect it to do anything stupid, but I've managed to create some rather spectacular failures before. Other than that, good luck, have fun.
+
